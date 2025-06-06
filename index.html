@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notify Vehicle Owner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right top, #e0f7fa, #e1f5fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 1rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 1.5rem;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      background: linear-gradient(to right, #25d366, #1ebe5d);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .button:hover {
+      box-shadow: 0 8px 18px rgba(37, 211, 102, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .footer {
+      font-size: 0.8rem;
+      color: #444;
+      margin-top: 1.5rem;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Notify the Vehicle Owner</h1>
+
+    <a class="button" href="#" id="msg1"> You left your keys inside your vehicle.</a>
+    <a class="button" href="#" id="msg2"> Your vehicle is parked incorrectly.</a>
+    <a class="button" href="#" id="msg3"> Your vehicle has been damaged.</a>
+    <a class="button" href="#" id="msg4"> Your headlights are ON.</a>
+    <a class="button" href="#" id="msg5"> Your window is open.</a>
+    <a class="button" href="#" id="msg6"> Your vehicle alarm is ringing.</a>
+
+    <div class="footer">
+      This alert will be sent anonymously via WhatsApp.
+    </div>
+  </div>
+
+  <script>
+    const phoneNumber = '918096266377'; // Replace with your number (no +)
+
+    const templates = {
+      msg1: "You left your keys inside your vehicle.",
+      msg2: "Your vehicle is parked incorrectly.",
+      msg3: "Your vehicle has been damaged.",
+      msg4: "Your headlights are ON.",
+      msg5: "Your window is open.",
+      msg6: "Your vehicle alarm is ringing."
+    };
+
+    Object.keys(templates).forEach(id => {
+      document.getElementById(id).href =
+        `https://wa.me/${phoneNumber}?text=${encodeURIComponent(templates[id])}`;
+    });
+  </script>
+</body>
+</html>
