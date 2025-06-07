@@ -1,106 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notify Vehicle Owner</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right top, #e0f7fa, #e1f5fe);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      padding: 1rem;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      border-radius: 20px;
-      padding: 2rem;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 1.5rem;
-    }
-
-    .button {
-      display: block;
-      width: 100%;
-      margin: 0.5rem 0;
-      padding: 0.9rem 1.2rem;
-      font-size: 0.95rem;
-      font-weight: 500;
-      background: linear-gradient(to right, #25d366, #1ebe5d);
-      color: white;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-    }
-
-    .button:hover {
-      box-shadow: 0 8px 18px rgba(37, 211, 102, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .footer {
-      font-size: 0.8rem;
-      color: #444;
-      margin-top: 1.5rem;
-      opacity: 0.7;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Send Vehicle Alert SMS</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #ddd;
+  }
+  label, button {
+    display: block;
+    margin-top: 15px;
+    width: 100%;
+  }
+  input[type="text"] {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  button {
+    padding: 10px;
+    font-size: 1.1rem;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  #result {
+    margin-top: 15px;
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
-  <div class="card">
-    <h1>Notify the Vehicle Owner</h1>
+<h2>Send Vehicle Alert SMS</h2>
+<label for="msgInput">Enter alert message:</label>
+<input type="text" id="msgInput" placeholder="Your alert message here" />
 
-    <a class="button" href="#" id="msg1"> You left your keys inside your vehicle.</a>
-    <a class="button" href="#" id="msg2"> Your vehicle is parked incorrectly.</a>
-    <a class="button" href="#" id="msg3"> Your vehicle has been damaged.</a>
-    <a class="button" href="#" id="msg4"> Your headlights are ON.</a>
-    <a class="button" href="#" id="msg5"> Your window is open.</a>
-    <a class="button" href="#" id="msg6"> Your vehicle alarm is ringing.</a>
+<button id="sendBtn">Send SMS</button>
 
-    <div class="footer">
-      This alert will be sent anonymously via WhatsApp.
-    </div>
-  </div>
+<div id="result"></div>
 
-  <script>
-    const phoneNumber = '918096266377'; // Replace with your number (no +)
+<script>
+  const sendBtn = document.getElementById('sendBtn')
+  const msgInput = document.getElementById('msgInput')
+  const result = document.getElementById('result')
 
-    const templates = {
-      msg1: "You left your keys inside your vehicle.",
-      msg2: "Your vehicle is parked incorrectly.",
-      msg3: "Your vehicle has been damaged.",
-      msg4: "Your headlights are ON.",
-      msg5: "Your window is open.",
-      msg6: "Your vehicle alarm is ringing."
-    };
+  sendBtn.addEventListener('click', async () => {
+    const message = msgInput.value.trim()
+    if (!message) {
+      result.textContent = 'Please enter a message'
+      result.style.color = 'red'
+      return
+    }
 
-    Object.keys(templates).forEach(id => {
-      document.getElementById(id).href =
-        `https://wa.me/${phoneNumber}?text=${encodeURIComponent(templates[id])}`;
-    });
-  </script>
+    result.textContent = 'Sending SMS...'
+    result.style.color = 'black'
+
+    try {
+      const resp = await fetch('https://vehicle-alert-worker.vamsiroyal07-1.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      })
+
+      if (resp.ok) {
+        result.textContent = 'SMS sent successfully!'
+        result.style.color = 'green'
+        msgInput.value = ''
+      } else {
+        const text = await resp.text()
+        result.textContent = 'Failed: ' + text
+        result.style.color = 'red'
+      }
+    } catch (error) {
+      result.textContent = 'Error: ' + error.message
+      result.style.color = 'red'
+    }
+  })
+</script>
 </body>
 </html>
